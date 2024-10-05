@@ -26,7 +26,7 @@ class Task(ABC):
         self.requires_execution = requires_execution
         self.tokenizer = tokenizer
         try:
-            self.dataset = load_dataset(path=self.DATASET_PATH, name=self.DATASET_NAME, revision=self.DATASET_REVISION, trust_remote_code=True)
+            self.dataset = load_dataset(path=self.DATASET_PATH, name=self.DATASET_NAME, trust_remote_code=True)
         except Exception as e:
             warn(
                 f"Loading the dataset failed with {str(e)}. This task will use a locally downloaded dataset, not from the HF hub. \
