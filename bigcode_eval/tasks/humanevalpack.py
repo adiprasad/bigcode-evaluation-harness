@@ -160,8 +160,8 @@ def create_task(language, name):
         def __init__(self, language=language, prompt="instruct", load_data_path=None):
             super().__init__(language=language, prompt=prompt, with_docs=False, load_data_path=load_data_path)
     class HumanEvalSynthesize(HumanEvalSynthesizeBase):
-        def __init__(self, language=language, prompt="instruct"):
-            super().__init__(language=language, prompt=prompt, with_docs=True)
+        def __init__(self, language=language, prompt="instruct", tokenizer=None):
+            super().__init__(language=language, prompt=prompt, with_docs=True, tokenizer=tokenizer)
     
     if name == "fixtests": return HumanEvalFixTests
     elif name == "fixdocs": return HumanEvalFixDocs
@@ -175,7 +175,7 @@ class HumanEvalPack(Task):
     DATASET_PATH = "bigcode/humanevalpack"
     DATASET_NAME = None
 
-    def __init__(self, prompt="instruct", language="python", with_docs=True):
+    def __init__(self, prompt="instruct", language="python", with_docs=True, tokenizer=None):
         
         self.DATASET_NAME = language
         self.prompt = prompt        
@@ -195,8 +195,9 @@ class HumanEvalPack(Task):
         elif self.prompt == "issue":  
             stop_words.append("```")
         stop_words.append("<|endoftext|>")
+        stop_words.append("<end_of_turn>")
         self.with_docs = with_docs
-        super().__init__(stop_words=stop_words, requires_execution=True)
+        super().__init__(stop_words=stop_words, requires_execution=True, tokenizer=tokenizer)
 
     def get_dataset(self):
         return self.dataset["test"]
@@ -220,7 +221,16 @@ class HumanEvalPack(Task):
         else:
             inp = instruction + "\n" + context
         
-        if self.prompt == "continue":
+        if self.tokenizer is not None:
+            prompt = self.tokenizer.apply_chat_template([
+                {
+                    "role": "user",
+                    "content": inp,
+                }
+            ], tokenize=False, add_generation_prompt=True).rstrip()
+            if self.prompt == "prompt_base":
+                prompt += prompt_base
+        elif self.prompt == "continue":
             assert context is None, "The `continue` prompt should only be used for HumanEvalSynthesize. Use `instruct` for HumanEvalFix and HumanEvalExplain."
             prompt = prompt_base
         elif self.prompt == "instruct":

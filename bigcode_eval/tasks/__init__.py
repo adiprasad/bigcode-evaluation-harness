@@ -36,14 +36,14 @@ TASK_REGISTRY = {
 ALL_TASKS = sorted(list(TASK_REGISTRY))
 
 
-def get_task(task_name, args=None):
+def get_task(task_name, args=None, tokenizer=None):
     try:
         kwargs = {}
         if "prompt" in inspect.signature(TASK_REGISTRY[task_name]).parameters:
             kwargs["prompt"] = args.prompt
         if "load_data_path" in inspect.signature(TASK_REGISTRY[task_name]).parameters:
             kwargs["load_data_path"] = args.load_data_path
-        return TASK_REGISTRY[task_name](**kwargs)
+        return TASK_REGISTRY[task_name](**kwargs, tokenizer=tokenizer)
     except KeyError:
         print("Available tasks:")
         pprint(TASK_REGISTRY)
