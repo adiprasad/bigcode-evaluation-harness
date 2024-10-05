@@ -148,17 +148,17 @@ def create_all_tasks():
 
 def create_task(language, name):
     class HumanEvalFixTests(HumanEvalFixBase):
-        def __init__(self, language=language, prompt="instruct"):
-            super().__init__(language=language, prompt=prompt, with_docs=False)
+        def __init__(self, language=language, prompt="instruct", tokenizer=None):
+            super().__init__(language=language, prompt=prompt, with_docs=False, tokenizer=tokenizer)
     class HumanEvalFixDocs(HumanEvalFixBase):
-        def __init__(self, language=language, prompt="instruct"):            
-            super().__init__(language=language, prompt=prompt, with_docs=True)
+        def __init__(self, language=language, prompt="instruct", tokenizer=None):            
+            super().__init__(language=language, prompt=prompt, with_docs=True, tokenizer=tokenizer)
     class HumanEvalExplainDescribe(HumanEvalExplainDescribeBase):
-        def __init__(self, language=language, prompt="instruct"):
-            super().__init__(language=language, prompt=prompt, with_docs=False)   
+        def __init__(self, language=language, prompt="instruct", tokenizer=None):
+            super().__init__(language=language, prompt=prompt, with_docs=False, tokenizer=tokenizer)   
     class HumanEvalExplainSynthesize(HumanEvalExplainSynthesizeBase):
-        def __init__(self, language=language, prompt="instruct", load_data_path=None):
-            super().__init__(language=language, prompt=prompt, with_docs=False, load_data_path=load_data_path)
+        def __init__(self, language=language, prompt="instruct", load_data_path=None, tokenizer=None):
+            super().__init__(language=language, prompt=prompt, with_docs=False, load_data_path=load_data_path, tokenizer=tokenizer)
     class HumanEvalSynthesize(HumanEvalSynthesizeBase):
         def __init__(self, language=language, prompt="instruct", tokenizer=None):
             super().__init__(language=language, prompt=prompt, with_docs=True, tokenizer=tokenizer)
